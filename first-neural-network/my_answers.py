@@ -41,15 +41,24 @@ class NeuralNetwork(object):
             targets: 1D array of target values
         
         '''
+        delta = []
         n_records = features.shape[0]
         delta_weights_i_h = np.zeros(self.weights_input_to_hidden.shape)
         delta_weights_h_o = np.zeros(self.weights_hidden_to_output.shape)
         X=features
         y=targets    
         final_outputs, hidden_outputs = self.forward_pass_train(X)  # Implement the forward pass function below
+            
             # Implement the backproagation function below
         delta_weights_i_h, delta_weights_h_o = self.backpropagation(final_outputs, hidden_outputs, X, y,delta_weights_i_h, delta_weights_h_o)
-        self.update_weights(delta_weights_i_h, delta_weights_h_o, n_records)
+        delta1=sum(sum(delta_weights_i_h**2))
+        delta2 = sum(sum(delta_weights_h_o**2))
+        factor2 = delta1/delta2
+        factor = delta2/delta1
+        
+        self.update_weights(delta_weights_i_h, delta_weights_h_o, n_records,factor)
+        
+        return (delta_weights_i_h, delta_weights_h_o)
 
 
     def forward_pass_train(self, X):
@@ -102,7 +111,7 @@ class NeuralNetwork(object):
         delta_weights_h_o = output_error_term
         return delta_weights_i_h, delta_weights_h_o
 
-    def update_weights(self, delta_weights_i_h, delta_weights_h_o, n_records):
+    def update_weights(self, delta_weights_i_h, delta_weights_h_o, n_records,factor):
         ''' Update weights on gradient descent step
          
             Arguments
@@ -114,7 +123,7 @@ class NeuralNetwork(object):
         '''
         
         self.weights_hidden_to_output += np.divide(np.multiply(self.lr,delta_weights_h_o),n_records) # update hidden-to-output weights with gradient descent step
-        self.weights_input_to_hidden += np.divide(np.multiply(self.lr,delta_weights_i_h),n_records)# update input-to-hidden weights with gradient descent step
+        self.weights_input_to_hidden += np.divide(np.multiply((self.lr*factor),delta_weights_i_h),n_records)# update input-to-hidden weights with gradient descent step
 
     def run(self, features):
         ''' Run a forward pass through the network with input features 
@@ -140,6 +149,6 @@ class NeuralNetwork(object):
 # Set your hyperparameters here
 ##########################################################
 iterations = 5000
-learning_rate = 0.7
+learning_rate = 0.5
 hidden_nodes = 11
 output_nodes = 1
