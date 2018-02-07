@@ -159,15 +159,36 @@ class NeuralNetwork(object):
         '''
         delta_weight_5,delta_weight_4,delta_weight_3,delta_weight_2,delta_weight_f1 = delta_weights
         delta_bias_5,delta_bias_4,delta_bias_3,delta_bias_2,delta_bias_1 = delta_bias
-        self.weight_input_1 -= np.divide(np.multiply(self.lr,delta_weight_f1),n_records)
-        self.bias_1 -= np.divide(np.multiply(self.lr,delta_bias_1),n_records)
         
-        self.weight_1_2 -= np.divide(np.multiply(self.lr,delta_weight_2),n_records)
-        self.bias_2 -= np.divide(np.multiply(self.lr,delta_bias_2),n_records)                              
-        self.weight_2_3 -= np.divide(np.multiply(self.lr,delta_weight_3),n_records)
-        self.bias_3 -= np.divide(np.multiply(self.lr,delta_bias_3),n_records)                              
-        self.weight_3_4 -= np.divide(np.multiply(self.lr,delta_weight_4),n_records)
-        self.bias_4 -= np.divide(np.multiply(self.lr,delta_bias_4),n_records)                              
+        delta_bias_distance_5 = np.linalg.norm(delta_bias_5)
+        delta_bias_distance_4 = np.linalg.norm(delta_bias_4)
+        delta_bias_distance_3 = np.linalg.norm(delta_bias_3)
+        delta_bias_distance_2 = np.linalg.norm(delta_bias_2)
+        delta_bias_distance_1 = np.linalg.norm(delta_bias_1)
+        bias_factor_4 = delta_bias_distance_5/delta_bias_distance_4
+        bias_factor_3 = delta_bias_distance_5/delta_bias_distance_3
+        bias_factor_2 = delta_bias_distance_5/delta_bias_distance_2
+        bias_factor_1 = delta_bias_distance_5/delta_bias_distance_1
+        delta_weight_distance_5 = np.linalg.norm(delta_weight_5)
+        delta_weight_distance_4 = np.linalg.norm(delta_weight_4)
+        delta_weight_distance_3 = np.linalg.norm(delta_weight_3)
+        delta_weight_distance_2 = np.linalg.norm(delta_weight_2)
+        delta_weight_distance_1 = np.linalg.norm(delta_weight_f1)
+        weight_factor_4 = delta_weight_distance_5/delta_weight_distance_4
+        weight_factor_3 = delta_weight_distance_5/delta_weight_distance_3
+        weight_factor_2 = delta_weight_distance_5/delta_weight_distance_2
+        weight_factor_1 = delta_weight_distance_5/delta_weight_distance_1
+        
+        
+        self.weight_input_1 -= np.divide(np.multiply((self.lr*weight_factor_1),delta_weight_f1),n_records)
+        self.bias_1 -= np.divide(np.multiply((self.lr*bias_factor_1),delta_bias_1),n_records)
+        
+        self.weight_1_2 -= np.divide(np.multiply((self.lr*weight_factor_2),delta_weight_2),n_records)
+        self.bias_2 -= np.divide(np.multiply((self.lr*bias_factor_2),delta_bias_2),n_records)                              
+        self.weight_2_3 -= np.divide(np.multiply((self.lr*weight_factor_3),delta_weight_3),n_records)
+        self.bias_3 -= np.divide(np.multiply((self.lr*bias_factor_3),delta_bias_3),n_records)                              
+        self.weight_3_4 -= np.divide(np.multiply((self.lr*weight_factor_4),delta_weight_4),n_records)
+        self.bias_4 -= np.divide(np.multiply((self.lr*bias_factor_4),delta_bias_4),n_records)                              
         self.weight_4_5 -= np.divide(np.multiply(self.lr,delta_weight_5),n_records)
         self.bias_5 -= np.divide(np.multiply(self.lr,delta_bias_5),n_records)
                                       
